@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Http;
 class GeocodingController extends Controller
 {
         public function searchLocation(Request $request)
-    {
+    {   
         $query = $request->input('query'); // Ambil input lokasi dari user
 
         $response = Http::withHeaders([
