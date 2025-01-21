@@ -65,9 +65,40 @@ class PemesananController extends Controller
     
         return response()->json(['error' => 'Trayek tidak ditemukan'], 404);
     }
+
+    public function beliTiket(Request $request)
+    {
+        $user = $request->user();
+
+        // Buat tiket baru
+        $ticket = Ticket::create([
+            'id_user' => $user->id,
+            'tgl_pembelian' => now()->format('Y-m-d'),
+            'expired_at' => now()->endOfDay(), // Jam 23:59 hari itu
+            'status' => 'active',
+        ]);
+
+        return response()->json(['message' => 'Tiket berhasil dibeli', 'ticket' => $ticket]);
+    }
+
+    public function gunakanTiket(Request $request)
+    {   
+        $user = $request->user();
+
+        $ticket = Ticket::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->where('expired_at', '>=', now())
+            ->first();
+
+        if (!$ticket) {
+            return response()->json(['error' => 'Tiket tidak valid atau sudah kadaluarsa.'], 403);
+        }
+
+        return response()->json(['message' => 'Tiket valid dan dapat digunakan.']);
+    }
     
    
-    public function pesanTiket(Request $request)
+    public function pesanAngkot(Request $request)
     {
         // Pastikan user terautentikasi dan memiliki role customer
         if (auth()->check() && auth()->user()->role != 'customer') {
@@ -85,6 +116,15 @@ class PemesananController extends Controller
         ]);
         
         $user = auth()->user(); // Ambil user yang terautentikasi
+                // Cek apakah user sudah memiliki tiket
+                $existingTicket = Ticket::where('id_user', $user->id)
+                ->where('status', 'active')
+                ->first();
+    
+            if (!$existingTicket) {
+                return response()->json(['message' => 'Tiket belum dibeli'], 403);
+            }
+
         $trayekId = $request->input('trayek_id');
         $jumlahTiket = $request->input('jumlah_tiket');
         $paymentMethod = $request->input('payment_method');
@@ -134,6 +174,7 @@ class PemesananController extends Controller
         $transaksi->id_user = $user->id;
         $transaksi->id_driver = $angkotTersedia->driver_id;
         $transaksi->id_trayek = $trayek->id;
+        $transaksi->tgl_transaksi = Carbon::now();
         $transaksi->jumlah_tiket = $jumlahTiket;
         $transaksi->payment_method = $paymentMethod; 
         $transaksi->payment_amount = $jumlahTiket * 10000; // Harga tiket per tiket

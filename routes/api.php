@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\ApiController;
 use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\GeocodingController;
+use App\Http\Controllers\TransaksiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +43,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Delete account
     Route::delete('/delete-account', [ApiController::class, 'deleteUser']);
 
-    // Filter tgl transaksi
+    // Filter transaksi utk customer/driver
+    Route::get('/driver/transaksi', [TransaksiController::class, 'getDriverTransactions']);
+    Route::get('/user/transaksi', [TransaksiController::class, 'getUserTransactions']);
+
+    
     Route::get('/transaksi/filter/date/{date}', [TransaksiController::class, 'filterByDate']);
     Route::get('/transaksi/filter/month/{month}/year/{year}', [TransaksiController::class, 'filterByMonth']);
     Route::get('/transaksi/filter/year/{year}', [TransaksiController::class, 'filterByYear']);
