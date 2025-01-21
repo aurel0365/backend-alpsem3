@@ -230,10 +230,6 @@ class TrayekListScreen extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => MapScreen(
-                    trayekName: trayek['name'],
-                    goRoute: trayek['Go'],
-                    backRoute: trayek['Back'],
-                    locations: trayek['locations'],
                   ),
                 ),
               );
