@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:flutter_pete/network/api.dart'; // Sesuaikan dengan path yang benar
+import 'package:flutter_pete/pov_pete/network/api.dart';
 import 'package:image_picker_web/image_picker_web.dart'; // Untuk memilih gambar di web
 
 class EditProfileScreen extends StatefulWidget {

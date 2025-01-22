@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_pete/screens/register_screen.dart';
+import 'package:flutter_pete/pov_customer/screen/HomeUser.dart';
+import 'package:flutter_pete/pov_pete/screens/home_screen.dart';
+import 'package:flutter_pete/pov_pete/screens/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'home_screen.dart'; // Sesuaikan dengan path yang benar
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -67,13 +68,22 @@ class _LoginScreenState extends State<LoginScreen> {
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token);
 
-          // Navigasi ke halaman utama (HomeScreen) dengan nama pengguna
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(username: user['name'] ?? 'Guest', userToken: token),
-            ),
-          );
+          // Navigasi ke halaman yang sesuai berdasarkan peran
+          if (selectedRole == 'customer') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreens(username: user['name'] ?? 'Guest', userToken: token),
+              ),
+            );
+          } else if (selectedRole == 'driver') {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomeScreen(username: user['name'] ?? 'Guest', userToken: token),
+              ),
+            );
+          }
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Login failed, try again.')),

@@ -14,15 +14,27 @@ class Network {
   }
 
   // Method untuk logout
-  Future<http.Response> logout(String token) async {
-    final response = await http.post(
-      Uri.parse('$_url/logout'),
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
-    );
-    return response;
+  Future<void> logout(String userToken) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$_url/logout'),
+        headers: {
+          'Authorization': 'Bearer $userToken',
+          'Content-Type': 'application/json',
+        },
+      );
+
+      print('Logout Response: ${response.statusCode} - ${response.body}'); // Log respons
+
+      if (response.statusCode == 200) {
+        print('Logout successful');
+      } else {
+        throw Exception('Failed to log out: ${response.body}');
+      }
+    } catch (e) {
+      print('Error during logout: $e'); // Log error
+      throw Exception('Error during logout: $e');
+    }
   }
 
   // Method untuk GET request

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_pete/screens/Drive_screen.dart';
-import 'package:flutter_pete/screens/faq_screen.dart';
-import 'package:flutter_pete/screens/home_screen.dart';
-import 'package:flutter_pete/screens/profile_screen.dart';
+import 'package:flutter_pete/pov_pete/screens/Drive_screen.dart';
+import 'package:flutter_pete/pov_pete/screens/faq_screen.dart';
+import 'package:flutter_pete/pov_pete/screens/home_screen.dart';
+import 'package:flutter_pete/pov_pete/screens/profile_screen.dart';
 
 class HistoryScreen extends StatelessWidget {
   final String username; // Tambahkan parameter username
@@ -49,10 +49,11 @@ class HistoryScreen extends StatelessWidget {
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        selectedItemColor: Colors.cyan,
-        unselectedItemColor: Colors.grey,
-        showUnselectedLabels: true,
-        currentIndex: 1,
+        selectedItemColor: Colors.cyan, // Warna item yang dipilih
+        unselectedItemColor: Colors.grey, // Warna item yang tidak dipilih
+        showSelectedLabels: true, // Tampilkan teks saat item dipilih
+        showUnselectedLabels: false, // Sembunyikan teks saat item tidak dipilih
+        currentIndex: 1, // Index yang aktif
         onTap: (index) {
           if (index == 0) {
             Navigator.pushReplacement(
@@ -62,21 +63,21 @@ class HistoryScreen extends StatelessWidget {
               ),
             );
           } else if (index == 1) {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => HistoryScreen(username: username, userToken: userToken),
               ),
             );
           } else if (index == 2) {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => FAQScreen(username: username, userToken: userToken),
               ),
             );
           } else if (index == 3) {
-            Navigator.pushReplacement(
+            Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => ProfileScreen(username: username, userToken: userToken),

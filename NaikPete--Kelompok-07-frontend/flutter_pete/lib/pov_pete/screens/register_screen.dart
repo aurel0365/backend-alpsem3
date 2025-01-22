@@ -4,9 +4,9 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'package:file_picker/file_picker.dart'; // For Flutter Web
+import 'package:flutter_pete/pov_pete/screens/login_screen.dart';
 import 'package:http/http.dart' as http; // For HTTP requests
 import 'package:image_picker/image_picker.dart'; // For Android/iOS
-import 'package:flutter_pete/screens/login_screen.dart'; // Adjust import as needed
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);

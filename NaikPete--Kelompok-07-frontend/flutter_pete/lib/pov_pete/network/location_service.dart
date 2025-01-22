@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:flutter_pete/models/location.dart';
+import 'package:flutter_pete/pov_pete/models/location.dart';
 import 'package:http/http.dart' as http;
 
 
