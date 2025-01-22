@@ -79,6 +79,7 @@ flutter:
     - lib/pov_customer/assets/images/AppLogo.png
     - lib/pov_customer/assets/images/Gambar1.png
     - lib/pov_customer/assets/images/Gambar2.png
+    # - lib/pov_customer/assets/images/Gambar3.png
     - lib/pov_customer/assets/images/berita1.jpg
     - lib/pov_customer/assets/images/berita2.jpg
 

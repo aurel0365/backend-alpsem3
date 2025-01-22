@@ -52,7 +52,7 @@ class TicketConfirmationScreen extends StatelessWidget {
                 children: [
                   Center(
                     child: Image.asset(
-                      'assets/images/Tiket.png',
+                      'lib/pov_customer/assets/images/Tiket.png',
                       height: 200, // Ukuran gambar diperbesar
                       fit: BoxFit.contain,
                     ),

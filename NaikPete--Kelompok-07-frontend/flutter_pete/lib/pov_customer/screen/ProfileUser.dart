@@ -20,7 +20,7 @@ class ProfileScreens extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreens> {
-  final Network _network = Network();
+  late final Network _network;
   Map<String, dynamic>? _userProfile;
   bool _isLoading = true;
   String _errorMessage = '';
@@ -28,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreens> {
   @override
   void initState() {
     super.initState();
+    _network = Network();
     _fetchProfile();
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_pete/pov_customer/screen/ConfirmInfoPete.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -22,6 +23,7 @@ class _PencarianpeteState extends State<Pencarianpete> {
   LatLng? userLatLng;
   List<LatLng> routePoints = [];
   MapController mapController = MapController();
+  String destinationAddress = ""; // Untuk menyimpan alamat tujuan
 
   @override
   void initState() {
@@ -92,6 +94,7 @@ class _PencarianpeteState extends State<Pencarianpete> {
 
   Future<void> _searchRoute() async {
     if (userLatLng == null || destination.isEmpty) {
+      print("Lokasi pengguna atau tujuan tidak valid.");
       return;
     }
 
@@ -102,8 +105,27 @@ class _PencarianpeteState extends State<Pencarianpete> {
       return;
     }
 
-    // Dapatkan rute dari GraphHopper
-    final apiKey = "4585cd0b-2f46-437c-9868-3645837b62e3"; // API key GraphHopper
+    // Dapatkan alamat tujuan
+    final destinationAddress = await getAddressFromLatLng(destinationCoordinates.latitude, destinationCoordinates.longitude);
+    setState(() {
+      this.destinationAddress = destinationAddress;
+    });
+
+    // Cetak koordinat untuk debugging
+    print("User Location: ${userLatLng!.latitude}, ${userLatLng!.longitude}");
+    print("Destination: ${destinationCoordinates.latitude}, ${destinationCoordinates.longitude}");
+
+    // Coba menggunakan GraphHopper terlebih dahulu
+    await _searchRouteWithGraphHopper(destinationCoordinates);
+
+    // Jika GraphHopper gagal, coba menggunakan OSRM
+    if (routePoints.isEmpty) {
+      await _searchRouteWithOSRM(destinationCoordinates);
+    }
+  }
+
+  Future<void> _searchRouteWithGraphHopper(LatLng destinationCoordinates) async {
+    final apiKey = "4585cd0b-2f46-437c-9868-3645837b62e3"; // Pastikan API key valid
     final url = Uri.parse(
         "https://graphhopper.com/api/1/route?point=${userLatLng!.latitude},${userLatLng!.longitude}&point=${destinationCoordinates.latitude},${destinationCoordinates.longitude}&vehicle=car&key=$apiKey");
 
@@ -117,7 +139,27 @@ class _PencarianpeteState extends State<Pencarianpete> {
         });
       }
     } else {
-      print("Error: ${response.statusCode}");
+      print("GraphHopper Error: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+    }
+  }
+
+  Future<void> _searchRouteWithOSRM(LatLng destinationCoordinates) async {
+    final url = Uri.parse(
+        "http://router.project-osrm.org/route/v1/driving/${userLatLng!.longitude},${userLatLng!.latitude};${destinationCoordinates.longitude},${destinationCoordinates.latitude}?overview=full&geometries=geojson");
+
+    final response = await http.get(url);
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data["routes"] != null && data["routes"].isNotEmpty) {
+        final geometry = data["routes"][0]["geometry"]["coordinates"];
+        setState(() {
+          routePoints = geometry.map<LatLng>((coord) => LatLng(coord[1], coord[0])).toList();
+        });
+      }
+    } else {
+      print("OSRM Error: ${response.statusCode}");
+      print("Response Body: ${response.body}");
     }
   }
 
@@ -129,12 +171,14 @@ class _PencarianpeteState extends State<Pencarianpete> {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data.isNotEmpty) {
-        final lat = double.parse(data[0]["lat"]);
-        final lng = double.parse(data[0]["lon"]);
-        return LatLng(lat, lng);
+        final lat = double.tryParse(data[0]["lat"]); // Gunakan tryParse untuk menghindari error
+        final lng = double.tryParse(data[0]["lon"]);
+        if (lat != null && lng != null) {
+          return LatLng(lat, lng);
+        }
       }
     }
-    return null;
+    return null; // Kembalikan null jika koordinat tidak valid
   }
 
   List<LatLng> _decodePolyline(String encoded) {
@@ -190,6 +234,25 @@ class _PencarianpeteState extends State<Pencarianpete> {
                           });
                         },
                       ),
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _searchRoute,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF42C8DC),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          minimumSize: Size(double.infinity, 50),
+                          elevation: 2,
+                        ),
+                        child: Text(
+                          "Cari Rute",
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -218,6 +281,15 @@ class _PencarianpeteState extends State<Pencarianpete> {
                                     size: 40,
                                   ),
                                 ),
+                                if (routePoints.isNotEmpty)
+                                  Marker(
+                                    point: routePoints.last,
+                                    builder: (ctx) => Icon(
+                                      Icons.location_on,
+                                      color: Colors.blue,
+                                      size: 40,
+                                    ),
+                                  ),
                               ],
                             ),
                             PolylineLayer(
@@ -273,8 +345,39 @@ class _PencarianpeteState extends State<Pencarianpete> {
                         ),
                       ),
                       SizedBox(height: 24),
+                      // Row(
+                      //   children: [
+                      //     Icon(
+                      //       Icons.location_on,
+                      //       color: Colors.blue,
+                      //       size: 28,
+                      //     ),
+                      //     SizedBox(width: 12),
+                      //     // Text(
+                      //     //   "Tujuan Anda",
+                      //     //   style: TextStyle(
+                      //     //     fontSize: 14,
+                      //     //     color: Colors.black54,
+                      //     //   ),
+                      //     // ),
+                      //   ],
+                      // ),
+                      // SizedBox(height: 8),
+                      // Text(
+                      //   destinationAddress.isNotEmpty ? destinationAddress : "Tujuan belum dipilih",
+                      //   style: TextStyle(
+                      //     fontSize: 18,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
+                      SizedBox(height: 24),
                       ElevatedButton(
-                        onPressed: _searchRoute,
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Confirmpete(currentLocation: '', destination: '', selectedRoute: '',)),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Color(0xFF42C8DC),
                           shape: RoundedRectangleBorder(

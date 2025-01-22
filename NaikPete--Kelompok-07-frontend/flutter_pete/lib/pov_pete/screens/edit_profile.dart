@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_pete/pov_pete/network/api.dart';
-import 'package:image_picker_web/image_picker_web.dart'; // Untuk memilih gambar di web
+import 'package:image_picker_web/image_picker_web.dart';
 
 class EditProfileScreen extends StatefulWidget {
   final Map<String, dynamic> userProfile;
@@ -25,26 +25,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _alamatController;
   late TextEditingController _genderController;
   late TextEditingController _tglLahirController;
-  Uint8List? _profileImageBytes; // Gunakan Uint8List untuk menyimpan gambar
+  Uint8List? _profileImageBytes;
 
   @override
   void initState() {
     super.initState();
-    _namaController = TextEditingController(text: widget.userProfile['user']['nama']);
-    _emailController = TextEditingController(text: widget.userProfile['user']['email']);
+    _namaController = TextEditingController(text: widget.userProfile['nama']);
+    _emailController = TextEditingController(text: widget.userProfile['email']);
     _passwordController = TextEditingController();
-    _noHpController = TextEditingController(text: widget.userProfile['user']['no_hp']);
-    _alamatController = TextEditingController(text: widget.userProfile['user']['alamat']);
-    _genderController = TextEditingController(text: widget.userProfile['user']['gender']);
-    _tglLahirController = TextEditingController(text: widget.userProfile['user']['tgl_lahir']);
+    _noHpController = TextEditingController(text: widget.userProfile['no_hp']);
+    _alamatController = TextEditingController(text: widget.userProfile['alamat']);
+    _genderController = TextEditingController(text: widget.userProfile['gender']);
+    _tglLahirController = TextEditingController(text: widget.userProfile['tgl_lahir']);
   }
 
   Future<void> _pickImage() async {
-    // Menggunakan image_picker_web untuk memilih gambar
     final pickedFile = await ImagePickerWeb.getImageAsBytes();
     if (pickedFile != null) {
       setState(() {
-        _profileImageBytes = pickedFile; // Simpan gambar sebagai Uint8List
+        _profileImageBytes = pickedFile;
       });
     }
   }
@@ -62,29 +61,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       };
 
       try {
-        print('Data yang dikirim: $body');
-        print('File gambar: $_profileImageBytes');
-
         final response = await _network.putData(
           '/edit-profile',
           body: body,
-          fileBytes: _profileImageBytes, // Kirim gambar sebagai Uint8List
+          fileBytes: _profileImageBytes,
+          token: widget.userToken,
         );
-
-        print('Response dari backend: ${response.body}');
 
         if (response.statusCode == 200) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Profil berhasil diperbarui')),
+            const SnackBar(content: Text('Profil berhasil diperbarui')),
           );
-          Navigator.pop(context, true); // Kembali ke halaman profil dengan data baru
+          Navigator.pop(context, true); // Kembali ke halaman profil dengan membawa status update
         } else if (response.statusCode == 422) {
           final errors = jsonDecode(response.body)['errors'];
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Validation failed: ${errors.toString()}')),
           );
         } else {
-          throw Exception('Gagal memperbarui profil');
+          throw Exception('Gagal memperbarui profil: ${response.body}');
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -111,12 +106,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 child: CircleAvatar(
                   radius: 50,
                   backgroundImage: _profileImageBytes != null
-                      ? MemoryImage(_profileImageBytes!) // Tampilkan gambar yang dipilih
-                      : widget.userProfile['user']['foto_profil'] != null
-                          ? _buildImageFromBase64(widget.userProfile['user']['foto_profil']) // Tampilkan gambar dari Base64
-                          : null, // Jika tidak ada gambar, tampilkan ikon default
-                  child: _profileImageBytes == null && widget.userProfile['user']['foto_profil'] == null
-                      ? const Icon(Icons.person, size: 50) // Ikon default
+                      ? MemoryImage(_profileImageBytes!)
+                      : widget.userProfile['profile_photo_path'] != null
+                          ? NetworkImage(widget.userProfile['profile_photo_path'])
+                          : null,
+                  child: _profileImageBytes == null && widget.userProfile['profile_photo_path'] == null
+                      ? const Icon(Icons.person, size: 50)
                       : null,
                 ),
               ),
@@ -178,11 +173,5 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
-  }
-
-  // Fungsi untuk mengonversi Base64 ke Image
-  ImageProvider _buildImageFromBase64(String base64String) {
-    final Uint8List bytes = base64Decode(base64String);
-    return MemoryImage(bytes);
   }
 }

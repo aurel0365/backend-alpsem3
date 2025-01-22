@@ -22,7 +22,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'description': 'Keep in touch with friends and family.',
     },
     {
-      'image': 'https://via.placeholder.com/300',
+      'image': 'lib/pov_customer/assets/images/Gambar3.png',
       'title': 'Let’s Get Started',
       'description': 'Enjoy your experience with us!',
     },

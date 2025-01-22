@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
 import 'PembayaranPerjalanan.dart';
 
-class Confirmpete extends StatelessWidget {
+class Confirmpete extends StatefulWidget {
   final String currentLocation;
   final String destination;
   final List<String> ruteAlternatif = [
@@ -15,8 +18,57 @@ class Confirmpete extends StatelessWidget {
   Confirmpete({
     required this.currentLocation,
     required this.destination,
-    required this.selectedRoute, required String location,
+    required this.selectedRoute,
   });
+
+  @override
+  _ConfirmpeteState createState() => _ConfirmpeteState();
+}
+
+class _ConfirmpeteState extends State<Confirmpete> {
+  LatLng? userLatLng;
+  MapController mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserLocation();
+  }
+
+  Future<void> _getUserLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Cek apakah layanan lokasi enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return;
+    }
+
+    // Cek permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return;
+    }
+
+    // Dapatkan lokasi saat ini
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      userLatLng = LatLng(position.latitude, position.longitude);
+    });
+
+    // Pindahkan peta ke lokasi pengguna
+    mapController.move(userLatLng!, 15.0);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,23 +83,41 @@ class Confirmpete extends StatelessWidget {
                   child: Column(
                     children: [
                       SizedBox(height: 60),
-                      SearchBar(hintText: currentLocation),
+                      SearchBar(hintText: widget.currentLocation),
                       SizedBox(height: 16),
-                      SearchBar(hintText: destination),
+                      SearchBar(hintText: widget.destination),
                     ],
                   ),
                 ),
                 Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Icon(
-                        Icons.location_on,
-                        color: Colors.blue,
-                        size: 48,
-                      ),
-                    ),
-                  ),
+                  child: userLatLng == null
+                      ? Center(child: CircularProgressIndicator())
+                      : FlutterMap(
+                          mapController: mapController,
+                          options: MapOptions(
+                            center: userLatLng,
+                            zoom: 15.0,
+                          ),
+                          children: [
+                            TileLayer(
+                              urlTemplate:
+                                  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                              subdomains: ['a', 'b', 'c'],
+                            ),
+                            MarkerLayer(
+                              markers: [
+                                Marker(
+                                  point: userLatLng!,
+                                  builder: (ctx) => Icon(
+                                    Icons.location_on,
+                                    color: Colors.red,
+                                    size: 40,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                 ),
               ],
             ),
@@ -82,11 +152,11 @@ class Confirmpete extends StatelessWidget {
                       Expanded(
                         child: ListView.builder(
                           controller: scrollController,
-                          itemCount: ruteAlternatif.length,
+                          itemCount: widget.ruteAlternatif.length,
                           itemBuilder: (context, index) {
                             return GestureDetector(
                               onTap: () {
-                                _showConfirmationDialog(context, ruteAlternatif[index]);
+                                _showConfirmationDialog(context, widget.ruteAlternatif[index]);
                               },
                               child: Card(
                                 margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -121,7 +191,7 @@ class Confirmpete extends StatelessWidget {
                                             ),
                                             SizedBox(height: 4),
                                             Text(
-                                              ruteAlternatif[index],
+                                              widget.ruteAlternatif[index],
                                               style: TextStyle(
                                                 fontSize: 14,
                                                 color: Colors.black54,

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_pete/pov_pete/screens/schedule_screen.dart';
+import 'package:flutter_pete/pov_pete/screens/Halte_screen.dart';
 import '../widget/BottomNavBar.dart'; // Pastikan path ini sesuai
 import 'ConfirmInfoPete.dart';
 import 'JadwalBerangkat.dart';
@@ -8,8 +8,7 @@ import 'Notification.dart';
 import 'PencarianPete.dart';
 import 'ProfileUser.dart';
 import 'Tiket.dart';
-import 'package:carousel_slider/carousel_slider.dart'; // Pastikan package carousel_slider diinstal
-
+import 'package:carousel_slider/carousel_slider.dart';
 class HomeScreens extends StatefulWidget {
   final String username; // Parameter username
   final String userToken; // Parameter userToken
@@ -290,7 +289,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                       builder: (context) => Confirmpete(
                         currentLocation: location,
                         destination: destination,
-                        location: '',
                         selectedRoute: '',
                       ),
                     ),
@@ -337,7 +335,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       physics: const NeverScrollableScrollPhysics(),
       children: [
         _buildServiceCard(context, Icons.directions_bus, "Transportasi", Colors.blue, Pencarianpete()),
-        _buildServiceCard(context, Icons.location_on, "Halte", Colors.red, TrayekListScreen()),
+        _buildServiceCard(context, Icons.location_on, "Halte", Colors.red, HalteListScreen()),
       ],
     );
   }

@@ -7,14 +7,38 @@ class Network {
   final String _url = 'http://127.0.0.1:8000/api'; // Ganti dengan URL API Anda
   String? token;
 
+  Network();
+
   // Method untuk mengambil token dari SharedPreferences
   Future<void> _getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    token = prefs.getString('token');
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      token = prefs.getString('token');
+    } catch (e) {
+      print('Error fetching token: $e');
+      throw Exception('Failed to fetch token: $e');
+    }
+  }
+
+  // Method untuk GET request
+  Future<http.Response> getData(String apiURL) async {
+    try {
+      await _getToken(); // Ambil token sebelum melakukan request
+      var fullUrl = Uri.parse('$_url$apiURL');
+      final response = await http.get(
+        fullUrl,
+        headers: _setHeaders(),
+      );
+
+      _checkResponse(response); // Periksa respons
+      return response;
+    } catch (e) {
+      print('Error in GET request: $e');
+      rethrow;
+    }
   }
 
   // Method untuk logout
-
   Future<void> logout(String userToken) async {
     try {
       final response = await http.post(
@@ -25,8 +49,7 @@ class Network {
         },
       );
 
-      print(
-          'Logout Response: ${response.statusCode} - ${response.body}'); // Log respons
+      print('Logout Response: ${response.statusCode} - ${response.body}');
 
       if (response.statusCode == 200) {
         print('Logout successful');
@@ -34,57 +57,46 @@ class Network {
         throw Exception('Failed to log out: ${response.body}');
       }
     } catch (e) {
-      print('Error during logout: $e'); // Log error
+      print('Error during logout: $e');
       throw Exception('Error during logout: $e');
     }
   }
 
-  // Method untuk GET request
-  Future<http.Response> getData(String apiURL) async {
-    await _getToken(); // Ambil token sebelum melakukan permintaan
-    var fullUrl = Uri.parse('$_url$apiURL');
-    return await http.get(
-      fullUrl,
-      headers: _setHeaders(),
-    );
-  }
-
-  // Method untuk POST request
-  Future<http.Response> postData(
-      String apiURL, Map<String, dynamic> data) async {
-    await _getToken(); // Ambil token sebelum melakukan permintaan
-    var fullUrl = Uri.parse('$_url$apiURL');
-    return await http.post(
-      fullUrl,
-      body: jsonEncode(data),
-      headers: _setHeaders(),
-    );
-  }
-
   // Method untuk PUT request dengan file upload
-  Future<http.Response> putData(String endpoint,
-      {required Map<String, String> body, Uint8List? fileBytes}) async {
-    await _getToken(); // Ambil token sebelum melakukan permintaan
-    final uri = Uri.parse('$_url$endpoint');
-    final request = http.MultipartRequest('PUT', uri);
+  Future<http.Response> putData(
+    String endpoint, {
+    required Map<String, String> body,
+    Uint8List? fileBytes,
+    required String token,
+  }) async {
+    try {
+      final uri = Uri.parse('$_url$endpoint');
+      final request = http.MultipartRequest('PUT', uri);
 
-    // Tambahkan header
-    request.headers.addAll(_setHeaders());
+      // Tambahkan header
+      request.headers['Authorization'] = 'Bearer $token';
 
-    // Tambahkan body
-    request.fields.addAll(body);
+      // Tambahkan body
+      request.fields.addAll(body);
 
-    // Tambahkan file jika ada
-    if (fileBytes != null) {
-      request.files.add(http.MultipartFile.fromBytes(
-        'profile_photo',
-        fileBytes,
-        filename: 'profile.jpg', // Nama file (opsional)
-      ));
+      // Tambahkan file jika ada
+      if (fileBytes != null) {
+        request.files.add(http.MultipartFile.fromBytes(
+          'profile_photo',
+          fileBytes,
+          filename: 'profile.jpg',
+        ));
+      }
+
+      final response = await request.send();
+      final http.Response httpResponse = await http.Response.fromStream(response);
+
+      _checkResponse(httpResponse);
+      return httpResponse;
+    } catch (e) {
+      print('Error in PUT request: $e');
+      rethrow;
     }
-
-    final response = await request.send();
-    return http.Response.fromStream(response);
   }
 
   // Method untuk mengatur headers
@@ -92,8 +104,14 @@ class Network {
     return {
       'Content-type': 'application/json',
       'Accept': 'application/json',
-      if (token != null)
-        'Authorization': 'Bearer $token', // Tambahkan token jika ada
+      if (token != null) 'Authorization': 'Bearer $token',
     };
+  }
+
+  // Method untuk memeriksa response
+  void _checkResponse(http.Response response) {
+    if (response.statusCode >= 400) {
+      throw Exception('Request failed with status: ${response.statusCode} - ${response.body}');
+    }
   }
 }

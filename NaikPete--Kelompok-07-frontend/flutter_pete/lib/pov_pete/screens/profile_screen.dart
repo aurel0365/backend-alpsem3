@@ -20,7 +20,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final Network _network = Network();
+  late final Network _network;
   Map<String, dynamic>? _userProfile;
   bool _isLoading = true;
   String _errorMessage = '';
@@ -28,6 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
+    _network = Network();
     _fetchProfile();
   }
 
@@ -55,21 +56,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // Method untuk handle logout
   Future<void> _handleLogout() async {
-    try {
-      await _network.logout(widget.userToken); // Panggil method logout dari Network
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()), // Navigasi ke LoginScreen setelah logout
-      );
-    } catch (e) {
-      setState(() {
-        _errorMessage = 'Failed to log out: $e';
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to log out: $e')),
-      );
-    }
+  try {
+    await _network.logout(widget.userToken); // Panggil method logout dari Network
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()), // Navigasi ke LoginScreen setelah logout
+    );
+  } catch (e) {
+    setState(() {
+      _errorMessage = 'Failed to log out: $e';
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Failed to log out: $e')),
+    );
   }
+}
 
   @override
   Widget build(BuildContext context) {
