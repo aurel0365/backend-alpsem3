@@ -152,7 +152,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
     // Make the HTTP POST request
     try {
       final response = await http.post(
-        Uri.parse('http://127.0.0.1:8000/api/register'), // Replace with your backend URL
+        Uri.parse(
+            'http://192.168.34.60:8080/api/register'), // Replace with your backend URL
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -223,9 +224,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   radius: 50,
                   backgroundImage: kIsWeb
                       ? (webImage != null ? MemoryImage(webImage!) : null)
-                      : (profileImage != null ? FileImage(profileImage!) : null),
+                      : (profileImage != null
+                          ? FileImage(profileImage!)
+                          : null),
                   child: (webImage == null && profileImage == null)
-                      ? const Icon(Icons.camera_alt, size: 50, color: Colors.grey)
+                      ? const Icon(Icons.camera_alt,
+                          size: 50, color: Colors.grey)
                       : null,
                 ),
               ),
@@ -342,7 +346,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.cyan,
-                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
               ),
               onPressed: registerUser,
               child: const Text(

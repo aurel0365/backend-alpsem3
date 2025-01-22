@@ -2,14 +2,16 @@ import 'dart:convert';
 import 'package:flutter_pete/pov_pete/models/location.dart';
 import 'package:http/http.dart' as http;
 
-
 class LocationService {
-  final String baseUrl = 'http://127.0.0.1:8000/api'; // Ganti dengan URL API Anda
+  final String baseUrl =
+      'http://192.168.34.60:8080/api'; // Ganti dengan URL API Anda
 
   // Method untuk mengambil data rute
-  Future<Map<String, dynamic>> getRoute(double startLat, double startLon, double endLat, double endLon) async {
+  Future<Map<String, dynamic>> getRoute(
+      double startLat, double startLon, double endLat, double endLon) async {
     final response = await http.get(
-      Uri.parse('$baseUrl/route?start_lat=$startLat&start_lon=$startLon&end_lat=$endLat&end_lon=$endLon'),
+      Uri.parse(
+          '$baseUrl/route?start_lat=$startLat&start_lon=$startLon&end_lat=$endLat&end_lon=$endLon'),
     );
 
     if (response.statusCode == 200) {
@@ -21,16 +23,17 @@ class LocationService {
 
   // Method untuk mengambil data rute melingkar
   Future<Map<String, dynamic>> getCircularRoute(String waypoints) async {
-  final response = await http.get(
-    Uri.parse('$baseUrl/circular-route?waypoints=$waypoints'),
-  );
+    final response = await http.get(
+      Uri.parse('$baseUrl/circular-route?waypoints=$waypoints'),
+    );
 
-  if (response.statusCode == 200) {
-    return json.decode(response.body);
-  } else {
-    throw Exception('Failed to load circular route. Status code: ${response.statusCode}');
+    if (response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception(
+          'Failed to load circular route. Status code: ${response.statusCode}');
+    }
   }
-}
 
   Future<List<Location>> getKoordinatHalte() async {
     final response = await http.get(Uri.parse('$baseUrl/koordinat-halte'));
@@ -42,5 +45,4 @@ class LocationService {
       throw Exception('Failed to load stops');
     }
   }
-
 }

@@ -46,7 +46,7 @@ class TicketScreen extends StatelessWidget {
                         maxHeight: 400, // Maksimal tinggi gambar
                       ),
                       child: Image.asset(
-                        'assets/images/Tiket.png',
+                        'lib/pov_customer/assets/images/Tiket.png',
                         fit: BoxFit.cover, // Gambar tetap proporsional
                       ),
                     ),

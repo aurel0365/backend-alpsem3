@@ -40,7 +40,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       // API endpoint
-      const url = 'http://127.0.0.1:8000/api/login';
+      const url = 'http://192.168.34.60:8080/api/login';
 
       // Make POST request
       final response = await http.post(
@@ -73,14 +73,16 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreens(username: user['name'] ?? 'Guest', userToken: token),
+                builder: (context) => HomeScreens(
+                    username: user['name'] ?? 'Guest', userToken: token),
               ),
             );
           } else if (selectedRole == 'driver') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                builder: (context) => HomeScreen(username: user['name'] ?? 'Guest', userToken: token),
+                builder: (context) => HomeScreen(
+                    username: user['name'] ?? 'Guest', userToken: token),
               ),
             );
           }
@@ -185,27 +187,29 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(color: Colors.white),
                       ),
                     ),
-                                      const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: () {
-                      // TODO: Tambahkan navigasi ke halaman lupa password
-                    },
-                    child: const Text('Lupa kata sandi?', style: TextStyle(color: Colors.cyan)),
-                  ),
-                  const SizedBox(height: 20),
-                  GestureDetector(
-                    onTap: () {
-                      // Arahkan ke halaman register_screen.dart
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const RegisterScreen()),
-                      );
-                    },
-                    child: const Text(
-                      'Belum memiliki akun? Daftar',
-                      style: TextStyle(color: Colors.cyan),
-                    ),
-                  ),
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  // TODO: Tambahkan navigasi ke halaman lupa password
+                },
+                child: const Text('Lupa kata sandi?',
+                    style: TextStyle(color: Colors.cyan)),
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  // Arahkan ke halaman register_screen.dart
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RegisterScreen()),
+                  );
+                },
+                child: const Text(
+                  'Belum memiliki akun? Daftar',
+                  style: TextStyle(color: Colors.cyan),
+                ),
+              ),
             ],
           ),
         ),

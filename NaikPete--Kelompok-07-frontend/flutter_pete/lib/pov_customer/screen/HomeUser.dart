@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../widget/BottomNavBar.dart';
-import 'JadwalBerangkat.dart';
-import 'Notification.dart';
-import 'PencarianPete.dart';
-import 'ProfileUser.dart';
-import 'Tiket.dart';
+import '../widget/BottomNavBar.dart'; // Pastikan path ini sesuai
+import 'JadwalBerangkat.dart'; // Pastikan path ini sesuai
+import 'Notification.dart'; // Pastikan path ini sesuai
+import 'PencarianPete.dart'; // Pastikan path ini sesuai
+import 'ProfileUser.dart'; // Pastikan path ini sesuai
+import 'Tiket.dart'; // Pastikan path ini sesuai
 
 class HomeScreens extends StatefulWidget {
   final String username; // Parameter username
@@ -17,31 +17,36 @@ class HomeScreens extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreens> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 0; // Indeks untuk BottomNavigationBar
 
+  // Method untuk menangani perubahan indeks BottomNavigationBar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  final List<Widget> _screens = [
-    // HomeScreenBody akan diisi dengan username dan userToken
-    HomeScreenBody(username: '', userToken: ''), // Diisi nanti
-    Jadwalberangkat(),
-    TicketScreen(),
-    ProfileScreens(username: '', userToken: '',),
-  ];
+  // Daftar layar yang akan ditampilkan di IndexedStack
+  late List<Widget> _screens;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi _screens dengan username dan userToken
+    _screens = [
+      HomeScreenBody(username: widget.username, userToken: widget.userToken),
+      Jadwalberangkat(),
+      TicketScreen(),
+      ProfileScreens(username: widget.username, userToken: widget.userToken),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Update _screens dengan username dan userToken
-    _screens[0] = HomeScreenBody(username: widget.username, userToken: widget.userToken);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: IndexedStack(
-        index: _selectedIndex,
+        index: _selectedIndex, // Tampilkan layar sesuai indeks yang dipilih
         children: _screens,
       ),
       bottomNavigationBar: BottomNavBar(
@@ -52,6 +57,7 @@ class _HomeScreenState extends State<HomeScreens> {
   }
 }
 
+// Widget untuk body layar beranda (HomeScreenBody)
 class HomeScreenBody extends StatelessWidget {
   final String username;
   final String userToken;
@@ -67,11 +73,11 @@ class HomeScreenBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 40),
-            _buildWelcomeSection(context, username),
+            _buildWelcomeSection(context, username), // Bagian selamat datang
             const SizedBox(height: 20),
-            _buildSearchBar(),
+            _buildSearchBar(), // Bar pencarian
             const SizedBox(height: 20),
-            _buildImageCarousel(),
+            _buildImageCarousel(), // Carousel gambar
             const SizedBox(height: 30),
             const Text(
               "Layanan",
@@ -82,15 +88,16 @@ class HomeScreenBody extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            _buildServiceGrid(context),
+            _buildServiceGrid(context), // Grid layanan
             const SizedBox(height: 30),
-            _buildInfoSection(),
+            _buildInfoSection(), // Bagian informasi
           ],
         ),
       ),
     );
   }
 
+  // Widget untuk bagian selamat datang
   Widget _buildWelcomeSection(BuildContext context, String username) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -161,6 +168,7 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
+  // Widget untuk bar pencarian
   Widget _buildSearchBar() {
     return Container(
       height: 50,
@@ -180,6 +188,7 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
+  // Widget untuk carousel gambar
   Widget _buildImageCarousel() {
     return SizedBox(
       height: 250,
@@ -202,6 +211,7 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
+  // Widget untuk grid layanan
   Widget _buildServiceGrid(BuildContext context) {
     return GridView.count(
       crossAxisCount: 3,
@@ -216,6 +226,7 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
+  // Widget untuk kartu layanan
   Widget _buildFeatureCard(IconData icon, String label, BuildContext context, Widget page) {
     return InkWell(
       onTap: () {
@@ -243,6 +254,7 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
+  // Widget untuk bagian informasi
   Widget _buildInfoSection() {
     return Container(
       padding: const EdgeInsets.all(16),

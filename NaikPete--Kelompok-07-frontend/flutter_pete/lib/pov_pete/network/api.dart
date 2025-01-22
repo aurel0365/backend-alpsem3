@@ -4,7 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Network {
-  final String _url = 'http://127.0.0.1:8000/api'; // Ganti dengan URL API Anda
+  final String _url =
+      'http://192.168.34.60:8080/api'; // Ganti dengan URL API Anda
   String? token;
 
   // Method untuk mengambil token dari SharedPreferences
@@ -24,7 +25,8 @@ class Network {
         },
       );
 
-      print('Logout Response: ${response.statusCode} - ${response.body}'); // Log respons
+      print(
+          'Logout Response: ${response.statusCode} - ${response.body}'); // Log respons
 
       if (response.statusCode == 200) {
         print('Logout successful');
@@ -48,7 +50,8 @@ class Network {
   }
 
   // Method untuk POST request
-  Future<http.Response> postData(String apiURL, Map<String, dynamic> data) async {
+  Future<http.Response> postData(
+      String apiURL, Map<String, dynamic> data) async {
     await _getToken(); // Ambil token sebelum melakukan permintaan
     var fullUrl = Uri.parse('$_url$apiURL');
     return await http.post(
@@ -59,7 +62,8 @@ class Network {
   }
 
   // Method untuk PUT request dengan file upload
-  Future<http.Response> putData(String endpoint, {required Map<String, String> body, Uint8List? fileBytes}) async {
+  Future<http.Response> putData(String endpoint,
+      {required Map<String, String> body, Uint8List? fileBytes}) async {
     await _getToken(); // Ambil token sebelum melakukan permintaan
     final uri = Uri.parse('$_url$endpoint');
     final request = http.MultipartRequest('PUT', uri);
@@ -88,7 +92,8 @@ class Network {
     return {
       'Content-type': 'application/json',
       'Accept': 'application/json',
-      if (token != null) 'Authorization': 'Bearer $token', // Tambahkan token jika ada
+      if (token != null)
+        'Authorization': 'Bearer $token', // Tambahkan token jika ada
     };
   }
 }
