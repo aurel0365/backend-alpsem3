@@ -1,10 +1,14 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_pete/pov_pete/screens/schedule_screen.dart';
 import '../widget/BottomNavBar.dart'; // Pastikan path ini sesuai
-import 'JadwalBerangkat.dart'; // Pastikan path ini sesuai
-import 'Notification.dart'; // Pastikan path ini sesuai
-import 'PencarianPete.dart'; // Pastikan path ini sesuai
-import 'ProfileUser.dart'; // Pastikan path ini sesuai
-import 'Tiket.dart'; // Pastikan path ini sesuai
+import 'ConfirmInfoPete.dart';
+import 'JadwalBerangkat.dart';
+import 'Notification.dart';
+import 'PencarianPete.dart';
+import 'ProfileUser.dart';
+import 'Tiket.dart';
+import 'package:carousel_slider/carousel_slider.dart'; // Pastikan package carousel_slider diinstal
 
 class HomeScreens extends StatefulWidget {
   final String username; // Parameter username
@@ -17,22 +21,19 @@ class HomeScreens extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreens> {
-  int _selectedIndex = 0; // Indeks untuk BottomNavigationBar
+  int _selectedIndex = 0;
+  late List<Widget> _screens; // Deklarasikan _screens sebagai late
 
-  // Method untuk menangani perubahan indeks BottomNavigationBar
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
 
-  // Daftar layar yang akan ditampilkan di IndexedStack
-  late List<Widget> _screens;
-
   @override
   void initState() {
     super.initState();
-    // Inisialisasi _screens dengan username dan userToken
+    // Inisialisasi _screens di dalam initState
     _screens = [
       HomeScreenBody(username: widget.username, userToken: widget.userToken),
       Jadwalberangkat(),
@@ -46,7 +47,7 @@ class _HomeScreenState extends State<HomeScreens> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: IndexedStack(
-        index: _selectedIndex, // Tampilkan layar sesuai indeks yang dipilih
+        index: _selectedIndex,
         children: _screens,
       ),
       bottomNavigationBar: BottomNavBar(
@@ -57,47 +58,111 @@ class _HomeScreenState extends State<HomeScreens> {
   }
 }
 
-// Widget untuk body layar beranda (HomeScreenBody)
-class HomeScreenBody extends StatelessWidget {
+class HomeScreenBody extends StatefulWidget {
   final String username;
   final String userToken;
 
   const HomeScreenBody({super.key, required this.username, required this.userToken});
 
   @override
+  _HomeScreenBodyState createState() => _HomeScreenBodyState();
+}
+
+class _HomeScreenBodyState extends State<HomeScreenBody> {
+  final List<String> imageUrls = [
+    'lib/pov_customer/assets/images/berita1.jpg', // Pastikan path gambar benar
+    'lib/pov_customer/assets/images/berita2.jpg', // Pastikan path gambar benar
+  ];
+
+  late PageController _pageController;
+  int _currentPage = 0;
+
+  TextEditingController _locationController = TextEditingController();
+  TextEditingController _destinationController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentPage);
+
+    // Timer untuk mengontrol auto-scroll setiap 3 detik
+    Timer.periodic(const Duration(seconds: 3), (Timer timer) {
+      if (_pageController.hasClients) {
+        if (_currentPage < imageUrls.length - 1) {
+          _currentPage++;
+        } else {
+          _currentPage = 0;
+        }
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _locationController.dispose();
+    _destinationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 40),
-            _buildWelcomeSection(context, username), // Bagian selamat datang
-            const SizedBox(height: 20),
-            _buildSearchBar(), // Bar pencarian
-            const SizedBox(height: 20),
-            _buildImageCarousel(), // Carousel gambar
-            const SizedBox(height: 30),
-            const Text(
-              "Layanan",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+    return Stack(
+      children: [
+        _buildBackgroundCarousel(),
+        SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 40),
+                _buildWelcomeSection(context, widget.username), // Bagian selamat datang
+                const SizedBox(height: 20),
+                _buildSearchBar(), // Bar pencarian
+                const SizedBox(height: 30),
+                const Text(
+                  "Layanan",
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                _buildServiceGrid(context), // Grid layanan
+                const SizedBox(height: 30),
+                _buildInfoSection(), // Bagian informasi
+              ],
             ),
-            const SizedBox(height: 20),
-            _buildServiceGrid(context), // Grid layanan
-            const SizedBox(height: 30),
-            _buildInfoSection(), // Bagian informasi
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
-  // Widget untuk bagian selamat datang
+  Widget _buildBackgroundCarousel() {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 300,
+        autoPlay: true,
+        viewportFraction: 1.0,
+      ),
+      items: imageUrls.map((url) {
+        return Image.asset(
+          url,
+          fit: BoxFit.cover,
+          width: double.infinity,
+        );
+      }).toList(),
+    );
+  }
+
   Widget _buildWelcomeSection(BuildContext context, String username) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -110,8 +175,15 @@ class HomeScreenBody extends StatelessWidget {
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color: Colors.white,
                 fontFamily: 'Montserrat',
+                shadows: [
+                  Shadow(
+                    offset: Offset(1.5, 1.5),
+                    blurRadius: 4.0,
+                    color: Colors.black54,
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 4),
@@ -122,8 +194,15 @@ class HomeScreenBody extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontFamily: 'Montserrat',
+                    shadows: [
+                      Shadow(
+                        offset: Offset(1.5, 1.5),
+                        blurRadius: 4.0,
+                        color: Colors.black54,
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(width: 6),
@@ -138,13 +217,13 @@ class HomeScreenBody extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: const Color.fromARGB(51, 83, 232, 255),
+                color: const Color.fromARGB(150, 66, 200, 220),
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
                 ],
               ),
@@ -152,8 +231,8 @@ class HomeScreenBody extends StatelessWidget {
             IconButton(
               icon: const Icon(
                 Icons.notifications,
-                color: Color(0xFF42C8DC),
-                size: 28,
+                color: Colors.white,
+                size: 30,
               ),
               onPressed: () {
                 Navigator.push(
@@ -168,50 +247,87 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
-  // Widget untuk bar pencarian
   Widget _buildSearchBar() {
     return Container(
-      height: 50,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: const TextField(
-        decoration: InputDecoration(
-          border: InputBorder.none,
-          prefixIcon: Icon(Icons.search, color: Colors.grey),
-          hintText: "Silahkan Mencari",
-          hintStyle: TextStyle(color: Colors.grey),
-          contentPadding: EdgeInsets.symmetric(vertical: 14),
-        ),
-      ),
-    );
-  }
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(height: 16),
+          _buildLocationInput(Icons.location_on, "Lokasi anda saat ini", Colors.cyan, _locationController),
+          const SizedBox(height: 16),
+          _buildLocationInput(Icons.location_on, "Tujuan anda saat ini", Colors.red, _destinationController),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                String location = _locationController.text;
+                String destination = _destinationController.text;
 
-  // Widget untuk carousel gambar
-  Widget _buildImageCarousel() {
-    return SizedBox(
-      height: 250,
-      child: PageView.builder(
-        itemCount: 3, // Jumlah banner
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
-                'lib/pov_pete/assets/pete-pete.jpg', // Gambar banner
-                fit: BoxFit.cover,
-                width: double.infinity,
+                if (location.isEmpty || destination.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Tujuan anda atau lokasi anda kosong!'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                } else {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Confirmpete(
+                        currentLocation: location,
+                        destination: destination,
+                        location: '',
+                        selectedRoute: '',
+                      ),
+                    ),
+                  );
+                }
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF42C8DC),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
+              child: const Text("Cari", style: TextStyle(color: Colors.white)),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
 
-  // Widget untuk grid layanan
+  Widget _buildLocationInput(IconData icon, String hintText, Color color, TextEditingController controller) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          icon,
+          color: color,
+        ),
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        contentPadding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
+      ),
+    );
+  }
+
   Widget _buildServiceGrid(BuildContext context) {
     return GridView.count(
       crossAxisCount: 3,
@@ -220,33 +336,31 @@ class HomeScreenBody extends StatelessWidget {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       children: [
-        _buildFeatureCard(Icons.directions_bus, "Pete-pete", context, Pencarianpete()),
-        _buildFeatureCard(Icons.location_on, "Halte", context, TicketScreen()),
+        _buildServiceCard(context, Icons.directions_bus, "Transportasi", Colors.blue, Pencarianpete()),
+        _buildServiceCard(context, Icons.location_on, "Halte", Colors.red, TrayekListScreen()),
       ],
     );
   }
 
-  // Widget untuk kartu layanan
-  Widget _buildFeatureCard(IconData icon, String label, BuildContext context, Widget page) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-        );
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        elevation: 2,
+  Widget _buildServiceCard(BuildContext context, IconData icon, String title, Color color, Widget targetScreen) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => targetScreen),
+          );
+        },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 30, color: const Color(0xFF42C8DC)),
-            const SizedBox(height: 8),
+            Icon(icon, size: 40, color: color),
+            const SizedBox(height: 10),
             Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -254,7 +368,6 @@ class HomeScreenBody extends StatelessWidget {
     );
   }
 
-  // Widget untuk bagian informasi
   Widget _buildInfoSection() {
     return Container(
       padding: const EdgeInsets.all(16),

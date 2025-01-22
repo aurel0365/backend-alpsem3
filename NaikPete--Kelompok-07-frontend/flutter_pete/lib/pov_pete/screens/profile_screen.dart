@@ -214,7 +214,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => HistoryScreen(username: widget.username, userToken: widget.userToken),
+                                  builder: (context) => HistoryScreen(username: "User"),
                                 ),
                               );
                             },
@@ -248,7 +248,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HistoryScreen(username: widget.username, userToken: widget.userToken),
+                builder: (context) => HistoryScreen(username: "User"),
               ),
             );
           } else if (index == 2) {

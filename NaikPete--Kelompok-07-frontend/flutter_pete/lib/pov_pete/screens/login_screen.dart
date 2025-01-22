@@ -5,7 +5,6 @@ import 'package:flutter_pete/pov_pete/screens/home_screen.dart';
 import 'package:flutter_pete/pov_pete/screens/register_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -40,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       // API endpoint
-      const url = 'http://192.168.34.60:8080/api/login';
+      const url = 'http://127.0.0.1:8000/api/login';
 
       // Make POST request
       final response = await http.post(
@@ -62,14 +61,16 @@ class _LoginScreenState extends State<LoginScreen> {
         final data = jsonDecode(response.body);
         final token = data['token'];
         final user = data['user'];
+        final role = data['role']; // Ambil role dari respons API
 
         if (token != null && user != null) {
-          // Simpan token ke SharedPreferences
+          // Simpan token dan role ke SharedPreferences
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', token);
+          await prefs.setString('role', role);
 
-          // Navigasi ke halaman yang sesuai berdasarkan peran
-          if (selectedRole == 'customer') {
+          // Navigasi ke halaman yang sesuai berdasarkan role
+          if (role == 'customer') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -77,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     username: user['name'] ?? 'Guest', userToken: token),
               ),
             );
-          } else if (selectedRole == 'driver') {
+          } else if (role == 'driver') {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(

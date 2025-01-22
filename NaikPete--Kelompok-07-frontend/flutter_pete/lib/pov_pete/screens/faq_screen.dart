@@ -159,7 +159,7 @@ class FAQScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HistoryScreen(username: username, userToken: userToken),
+                builder: (context) => HistoryScreen(username: '',),
               ),
             );
           } else if (index == 2) {

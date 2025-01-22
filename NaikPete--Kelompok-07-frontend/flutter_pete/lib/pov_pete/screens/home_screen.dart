@@ -66,7 +66,7 @@ class HomeScreen extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => HistoryScreen(username: username, userToken: userToken),
+                builder: (context) => HistoryScreen(username: "User"),
               ),
             );
           } else if (index == 2) {

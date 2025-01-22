@@ -1,13 +1,22 @@
 import 'package:flutter/material.dart';
-
-import 'MetodePembayaran.dart';
+import 'PembayaranPerjalanan.dart';
 
 class Confirmpete extends StatelessWidget {
+  final String currentLocation;
+  final String destination;
   final List<String> ruteAlternatif = [
-    "Rute Alternatif 1: Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan AP Pettarani – Jalan Dr. Ratulangi – Jalan Haji Bau – Jalan Penghibur – Ciputra",
-    "Rute Alternatif 2: Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan Dr. Ratulangi – Jalan Haji Bau – Jalan Penghibur – Ciputra",
-    "Rute Alternatif 3: Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan AP Pettarani – Jalan Haji Bau – Ciputra",
+    "Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan AP Pettarani – Jalan Dr. Ratulangi – Jalan Haji Bau – Jalan Penghibur – Ciputra",
+    "Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan Dr. Ratulangi – Jalan Haji Bau – Jalan Penghibur – Ciputra",
+    "Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan AP Pettarani – Jalan Haji Bau – Ciputra",
   ];
+
+  final String selectedRoute;
+
+  Confirmpete({
+    required this.currentLocation,
+    required this.destination,
+    required this.selectedRoute, required String location,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,22 +26,20 @@ class Confirmpete extends StatelessWidget {
           children: [
             Column(
               children: [
-                // Search Bars
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
                   child: Column(
                     children: [
-                      SizedBox(height: 60), // Jarak awal dari atas
-                      SearchBar(hintText: "Cari Lokasimu saat ini"),
-                      SizedBox(height: 16), // Jarak antar SearchBar
-                      SearchBar(hintText: "Tujuan Anda"),
+                      SizedBox(height: 60),
+                      SearchBar(hintText: currentLocation),
+                      SizedBox(height: 16),
+                      SearchBar(hintText: destination),
                     ],
                   ),
                 ),
-                // Map Placeholder
                 Expanded(
                   child: Container(
-                    color: Colors.white, // Warna latar belakang seragam
+                    color: Colors.white,
                     child: Center(
                       child: Icon(
                         Icons.location_on,
@@ -45,15 +52,14 @@ class Confirmpete extends StatelessWidget {
               ],
             ),
 
-            // DraggableScrollableSheet for Bottom Panel
             DraggableScrollableSheet(
-              initialChildSize: 0.3,
-              minChildSize: 0.3,
+              initialChildSize: 0.4,
+              minChildSize: 0.4,
               maxChildSize: 0.8,
               builder: (context, scrollController) {
                 return Container(
                   decoration: BoxDecoration(
-                    color: Colors.white, // Warna latar belakang seragam
+                    color: Colors.white,
                     borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
                     boxShadow: [
                       BoxShadow(
@@ -64,7 +70,6 @@ class Confirmpete extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      // Garis untuk penarik
                       Container(
                         width: 50,
                         height: 4,
@@ -75,80 +80,65 @@ class Confirmpete extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: SingleChildScrollView(
+                        child: ListView.builder(
                           controller: scrollController,
-                          child: Padding(
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      "Pete-pete A",
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    Icon(Icons.favorite_border, color: Colors.red),
-                                  ],
+                          itemCount: ruteAlternatif.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                _showConfirmationDialog(context, ruteAlternatif[index]);
+                              },
+                              child: Card(
+                                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                elevation: 3,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
                                 ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(Icons.location_on, size: 16, color: Colors.blue),
-                                    SizedBox(width: 8),
-                                    Text("19 Km", style: TextStyle(fontSize: 14)),
-                                    SizedBox(width: 24),
-                                    Icon(Icons.star, size: 16, color: Colors.amber),
-                                    SizedBox(width: 8),
-                                    Text("4.8 Rating", style: TextStyle(fontSize: 14)),
-                                  ],
-                                ),
-                                SizedBox(height: 12),
-                                Text(
-                                  "Mall Panakkukang – Jalan Boulevard Panakkukang – Jalan AP Pettarani – Jalan Dr. Ratulangi – Jalan Haji  – Ciputra",
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                    height: 1.5, // Menambahkan line-height untuk keterbacaan
-                                  ),
-                                ),
-                                SizedBox(height: 16),
-                                Text(
-                                  "Saran Rute Tercepat: ",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: ruteAlternatif.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          // Menampilkan dialog konfirmasi saat rute dipilih
-                                          _showConfirmationDialog(context, ruteAlternatif[index]);
-                                        },
-                                        child: Text(
-                                          "• ${ruteAlternatif[index]}",
-                                          style: TextStyle(fontSize: 14, color: Colors.black87),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: Colors.blue[100],
+                                        child: Icon(
+                                          Icons.route,
+                                          color: Colors.blue,
                                         ),
                                       ),
-                                    );
-                                  },
+                                      SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Rute ${index + 1}",
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 4),
+                                            Text(
+                                              ruteAlternatif[index],
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.black54,
+                                              ),
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 16),
-                              ],
-                            ),
-                          ),
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ],
@@ -157,14 +147,13 @@ class Confirmpete extends StatelessWidget {
               },
             ),
 
-            // Custom Back Button
             Positioned(
               top: 16,
               left: 16,
               child: Container(
                 margin: const EdgeInsets.all(8.0),
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(51, 83, 232, 255), // Latar belakang soft blue
+                  color: const Color.fromARGB(51, 83, 232, 255),
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
@@ -175,21 +164,20 @@ class Confirmpete extends StatelessWidget {
                   ],
                 ),
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Color(0xFF42C8DC)), // Ikon biru
+                  icon: const Icon(Icons.arrow_back, color: Color(0xFF42C8DC)),
                   onPressed: () {
-                    Navigator.pop(context); // Kembali ke layar sebelumnya
+                    Navigator.pop(context);
                   },
                 ),
               ),
             ),
 
-            // **Fixed Bottom Panel for Cost and Next Button**
             Positioned(
               bottom: 0,
               left: 0,
               right: 0,
               child: Container(
-                color: Colors.white, // Latar belakang putih
+                color: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
                 child: Column(
                   children: [
@@ -197,7 +185,7 @@ class Confirmpete extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "Biaya:",
+                          "Biaya: ",
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -216,11 +204,10 @@ class Confirmpete extends StatelessWidget {
                     SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        // Tambahkan aksi yang ingin dilakukan saat tombol ditekan
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => PaymentMethodScreen(), // Ganti HalamanSelanjutnya dengan layar tujuan
+                            builder: (context) => PaymentScreen(),
                           ),
                         );
                       },
@@ -251,7 +238,6 @@ class Confirmpete extends StatelessWidget {
     );
   }
 
-  // Fungsi untuk menampilkan dialog konfirmasi
   void _showConfirmationDialog(BuildContext context, String ruteTercepat) {
     showDialog(
       context: context,
@@ -262,17 +248,14 @@ class Confirmpete extends StatelessWidget {
           actions: <Widget>[
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Menutup dialog jika "Tidak"
+                Navigator.pop(context);
               },
               child: Text("Tidak"),
             ),
             TextButton(
               onPressed: () {
-                Navigator.pop(context); // Menutup dialog jika "Iya"
-                // Mengupdate rute dengan rute tercepat yang dipilih
-                // Gantilah rute yang ada dengan rute tercepat
+                Navigator.pop(context);
                 print("Rute diperbarui dengan: $ruteTercepat");
-                // Di sini Anda dapat memperbarui state atau menggunakan provider
               },
               child: Text("Iya"),
             ),
@@ -290,24 +273,11 @@ class SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 6,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: TextField(
-        decoration: InputDecoration(
-          hintText: hintText,
-          hintStyle: TextStyle(color: Colors.black38),
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+    return TextField(
+      decoration: InputDecoration(
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );

@@ -12,12 +12,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _onboardingData = [
     {
-      'image': 'https://via.placeholder.com/300',
+      'image': 'lib/pov_customer/assets/images/Gambar1.png',
       'title': 'Selamat datang di NaikPete',
       'description': 'Temukan fitur yang luar biasa untuk perjalanan Anda.',
     },
     {
-      'image': 'https://via.placeholder.com/300',
+      'image': 'lib/pov_customer/assets/images/Gambar2.png',
       'title': 'Stay Connected',
       'description': 'Keep in touch with friends and family.',
     },

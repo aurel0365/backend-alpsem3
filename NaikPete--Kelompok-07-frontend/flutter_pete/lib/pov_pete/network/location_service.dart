@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class LocationService {
   final String baseUrl =
-      'http://192.168.34.60:8080/api'; // Ganti dengan URL API Anda
+      'http://127.0.0.1:8000/api'; // Ganti dengan URL API Anda
 
   // Method untuk mengambil data rute
   Future<Map<String, dynamic>> getRoute(

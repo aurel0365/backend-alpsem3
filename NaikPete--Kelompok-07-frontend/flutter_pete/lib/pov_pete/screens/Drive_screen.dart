@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_pete/pov_pete/screens/History.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart'; // Untuk mendapatkan lokasi real-time
 
@@ -27,13 +28,13 @@ class DriverScreen extends StatefulWidget {
 
 class _DriverScreenState extends State<DriverScreen> {
   final MapController _mapController = MapController();
-  LatLng? userLocation; // Lokasi pengguna
+  LatLng? _userLocation; // Lokasi pengguna saat ini
   StreamSubscription<Position>? _positionStream; // Stream untuk pembaruan lokasi
 
   @override
   void initState() {
     super.initState();
-    _getUserLocation();
+    _getUserLocation(); // Ambil lokasi pengguna saat ini
   }
 
   @override
@@ -69,15 +70,15 @@ class _DriverScreenState extends State<DriverScreen> {
       _positionStream = Geolocator.getPositionStream(
         locationSettings: LocationSettings(
           accuracy: LocationAccuracy.high, // Akurasi tinggi
-          distanceFilter: 5, // Update setiap 10 meter
+          distanceFilter: 10, // Update setiap 10 meter
         ),
       ).listen((Position position) {
         setState(() {
-          userLocation = LatLng(position.latitude, position.longitude);
+          _userLocation = LatLng(position.latitude, position.longitude);
         });
 
         // Geser peta ke lokasi pengguna yang baru
-        _mapController.move(userLocation!, _mapController.zoom);
+        _mapController.move(_userLocation!, _mapController.zoom);
       });
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -131,13 +132,26 @@ class _DriverScreenState extends State<DriverScreen> {
               ),
               MarkerLayer(
                 markers: [
-                  // Marker untuk lokasi pengguna
-                  if (userLocation != null)
+                  // Marker untuk setiap lokasi halte
+                  ...widget.routePoints.map(
+                    (point) => Marker(
+                      width: 40.0,
+                      height: 40.0,
+                      point: point,
+                      builder: (ctx) => Icon(
+                        Icons.location_on,
+                        color: Colors.orange,
+                        size: 30.0,
+                      ),
+                    ),
+                  ),
+                  // Marker untuk lokasi pengguna saat ini
+                  if (_userLocation != null)
                     Marker(
-                      width: 80.0,
-                      height: 80.0,
-                      point: userLocation!,
-                      builder: (ctx) => const Icon(
+                      width: 50.0,
+                      height: 50.0,
+                      point: _userLocation!,
+                      builder: (ctx) => Icon(
                         Icons.location_on,
                         color: Colors.blue,
                         size: 40.0,
@@ -244,8 +258,13 @@ class _DriverScreenState extends State<DriverScreen> {
                       );
                       history.add(tripHistory);
 
-                      // Kembali ke halaman home
-                      Navigator.pop(context);
+                      // Kembali ke HistoryScreen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => HistoryScreen(username: "User"),
+                        ),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -270,20 +289,3 @@ class _DriverScreenState extends State<DriverScreen> {
     );
   }
 }
-
-class TripHistory {
-  final String trayekName;
-  final String goRoute;
-  final String backRoute;
-  final DateTime timestamp;
-
-  TripHistory({
-    required this.trayekName,
-    required this.goRoute,
-    required this.backRoute,
-    required this.timestamp,
-  });
-}
-
-// List untuk menyimpan riwayat trayek
-List<TripHistory> history = [];

@@ -162,14 +162,9 @@ class TrayekListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'Jadwal dan Trayek',
-          style: TextStyle(color: Colors.black),
-        ),
+        title: const Text('Jadwal dan Trayek'),
         backgroundColor: Colors.blue,
         centerTitle: true,
         elevation: 0,
@@ -207,40 +202,30 @@ class TrayekListScreen extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.directions_bus,
-                      size: size.width * 0.1, // Ukuran icon responsif
+                      size: 40.0,
                       color: Colors.blue,
                     ),
-                    SizedBox(width: size.width * 0.04), // Padding horizontal
+                    SizedBox(width: 16.0),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             trayek['name'],
-                            style: TextStyle(fontSize: size.width * 0.04),
+                            style: TextStyle(fontSize: 18.0),
                           ),
-                          SizedBox(height: size.height * 0.005),
+                          SizedBox(height: 8.0),
                           Text(
-                            'Rute berangkat:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: size.height * 0.005),
-                          Text(
-                            trayek['Go'],
-                            style: TextStyle(fontSize: size.width * 0.020),
-                            maxLines: 5,
+                            'Rute berangkat: ${trayek['Go']}',
+                            style: TextStyle(fontSize: 14.0),
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
-                          SizedBox(height: size.height * 0.005),
+                          SizedBox(height: 8.0),
                           Text(
-                            'Rute balik:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(height: size.height * 0.005),
-                          Text(
-                            trayek['Back'],
-                            style: TextStyle(fontSize: size.width * 0.020),
-                            maxLines: 5,
+                            'Rute balik: ${trayek['Back']}',
+                            style: TextStyle(fontSize: 14.0),
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ],

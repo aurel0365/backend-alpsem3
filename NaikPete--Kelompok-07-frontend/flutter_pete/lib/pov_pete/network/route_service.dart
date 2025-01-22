@@ -4,7 +4,7 @@ import 'package:latlong2/latlong.dart';
 
 class RouteService {
   final String baseUrl =
-      'http://192.168.34.60:8080/api'; // Replace with your actual API URL
+      'http://127.0.0.1:8000/api'; // Replace with your actual API URL
 
   Future<List<LatLng>> fetchRoute(List<LatLng> locations) async {
     try {
