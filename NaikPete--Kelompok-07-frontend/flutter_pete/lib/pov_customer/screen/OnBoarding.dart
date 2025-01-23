@@ -12,23 +12,20 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   final List<Map<String, String>> _onboardingData = [
     {
-      'image': 'lib/pov_customer/assets/images/Gambar1.png',
+      'image': 'assets/images/Gambar1.png',
       'title': 'Selamat datang di NaikPete',
-      'description': 'Temukan fitur yang luar biasa untuk perjalanan Anda.',
     },
     {
-      'image': 'lib/pov_customer/assets/images/Gambar2.png',
-      'title': 'Stay Connected',
-      'description': 'Keep in touch with friends and family.',
+      'image': 'assets/images/Gambar2.png',
+      'title': 'Selamat menikmati perjalanan yang nyaman dan terjamin',
     },
     {
-      'image': 'lib/pov_customer/assets/images/Gambar3.png',
+      'image': 'assets/images/Gambar3.png',
       'title': 'Let’s Get Started',
-      'description': 'Enjoy your experience with us!',
     },
   ];
 
-  void _goToHomeScreen() {
+  void _goToLoginScreen() {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => LoginScreen()),
@@ -50,43 +47,64 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               },
               itemCount: _onboardingData.length,
               itemBuilder: (context, index) {
+                final image = _onboardingData[index]['image'];
+                final title = _onboardingData[index]['title'];
+
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.network(
-                      _onboardingData[index]['image']!,
-                      height: 300,
-                    ),
+                    image != null && image.isNotEmpty
+                        ? Image.asset(image, height: 300)
+                        : const Icon(Icons.image_not_supported, size: 100),
                     const SizedBox(height: 20),
                     Text(
-                      _onboardingData[index]['title']!,
+                      title ?? 'Title not available',
+                      textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                       ),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      _onboardingData[index]['description']!,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                   ],
                 );
               },
             ),
           ),
+          if (_currentPage == _onboardingData.length - 1)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0),
+              child: ElevatedButton(
+                onPressed: _goToLoginScreen,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.cyan,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 15, horizontal: 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Sign In',
+                  style: TextStyle(fontSize: 18),
+                ),
+              ),
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  onPressed: _goToHomeScreen,
-                  child: const Text(
-                    'Skip',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
+                IconButton(
+                  onPressed: () {
+                    if (_currentPage > 0) {
+                      _pageController.previousPage(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.arrow_back_ios),
                 ),
                 Row(
                   children: List.generate(
@@ -107,7 +125,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 IconButton(
                   onPressed: () {
                     if (_currentPage == _onboardingData.length - 1) {
-                      _goToHomeScreen();
+                      _goToLoginScreen();
                     } else {
                       _pageController.nextPage(
                         duration: const Duration(milliseconds: 300),
