@@ -32,8 +32,12 @@ Route::post('/login', [LoginController::class, 'login']);
 
 // Middleware 
 Route::middleware('auth:sanctum')->group(function () {
-    // Route untuk pemesanan tiket, memerlukan autentikasi
-    Route::post('/pesan-tiket', [PemesananController::class, 'pesanTiket']);
+    // Beli Tiket
+    Route::post('/beli-tiket', [PemesananController::class, 'beliTiket']);
+    // Cek status tiket
+    Route::post('/cek-status-tiket', [PemesananController::class, 'cekTiket']);
+    // Route untuk pemesanan pete - pete
+    Route::post('/pesan-pete', [PemesananController::class, 'pesanPete']);
     // Logout
     Route::post('/logout', [ApiController::class, 'logout']);
     // Tes Profile Yang Ter-login
@@ -47,12 +51,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/driver/transaksi', [TransaksiController::class, 'getDriverTransactions']);
     Route::get('/user/transaksi', [TransaksiController::class, 'getUserTransactions']);
 
-    
+    // Filter transaksi berdasarkan tanggal
     Route::get('/transaksi/filter/date/{date}', [TransaksiController::class, 'filterByDate']);
     Route::get('/transaksi/filter/month/{month}/year/{year}', [TransaksiController::class, 'filterByMonth']);
     Route::get('/transaksi/filter/year/{year}', [TransaksiController::class, 'filterByYear']);
     Route::get('/transaksi/filter/date/{date}/month/{month}/year/{year}', [TransaksiController::class, 'filterByDateMonthYear']);
-    Route::get('/transaksi/sort/{column}/{direction?}', [TransaksiController::class, 'sortTransactions']);
 
 });
 

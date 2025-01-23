@@ -1,0 +1,1934 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "NaikPete' API",
+        "description": "API documentation for My Application",
+        "termsOfService": "https://www.example.com/terms",
+        "contact": {
+            "email": "contact@example.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/profile": {
+            "get": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Retrieve authenticated user profile",
+                "operationId": "e4cb863bc17780a7b7fe2cb6eb9a228b",
+                "responses": {
+                    "200": {
+                        "description": "User profile retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are authenticated"
+                                        },
+                                        "user": {
+                                            "type": "object",
+                                            "example": {
+                                                "id": 1,
+                                                "name": "John Doe",
+                                                "email": "user@example.com"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Log out the authenticated user",
+                "operationId": "a2fc6b481adf708b3425044ec7b701c1",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/edit-profile": {
+            "put": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Update user profile",
+                "operationId": "4ab7bb71053bef4e1ede72dbb4d8083b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "nama": {
+                                        "description": "Full name of the user",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "User's email",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "description": "New password",
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "no_hp": {
+                                        "description": "Phone number",
+                                        "type": "string",
+                                        "example": "081234567890"
+                                    },
+                                    "alamat": {
+                                        "description": "Address",
+                                        "type": "string",
+                                        "example": "Jl. Example No. 1"
+                                    },
+                                    "gender": {
+                                        "description": "Gender",
+                                        "type": "string",
+                                        "enum": [
+                                            "laki-laki",
+                                            "perempuan"
+                                        ],
+                                        "example": "laki-laki"
+                                    },
+                                    "tgl_lahir": {
+                                        "description": "Date of birth",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "User profile updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User profile updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation failed",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                },
+                                                "property": null
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/delete-account": {
+            "delete": {
+                "tags": [
+                    "User Profile"
+                ],
+                "summary": "Delete authenticated user's account",
+                "operationId": "ca6f3a8c6a9d2f0d86840ce0a0f60e87",
+                "responses": {
+                    "200": {
+                        "description": "User account deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User account deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user berdasarkan role",
+                "operationId": "3673edffcdc18c06ac5aef5e2219d774",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "description": "Email pengguna",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "user@example.com"
+                                    },
+                                    "password": {
+                                        "description": "Password pengguna",
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "role": {
+                                        "description": "Role pengguna (customer atau driver)",
+                                        "type": "string",
+                                        "enum": [
+                                            "customer",
+                                            "driver"
+                                        ],
+                                        "example": "customer"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login berhasil",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Login berhasil"
+                                        },
+                                        "role": {
+                                            "description": "Role pengguna",
+                                            "type": "string",
+                                            "example": "customer"
+                                        },
+                                        "token": {
+                                            "type": "string",
+                                            "example": "1|xyz123abc456def789ghi"
+                                        },
+                                        "nama": {
+                                            "description": "Nama pengguna",
+                                            "type": "string",
+                                            "example": "John Doe"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Email, role, atau password tidak sesuai",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Email, role, atau password tidak sesuai."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Role tidak valid",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Role tidak valid."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validasi input gagal",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "string"
+                                                },
+                                                "property": null
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "User registration for customer or driver",
+                "operationId": "748a1acc92fb3e56f8f6ace55b5a9d24",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "nama",
+                                    "email",
+                                    "password",
+                                    "no_hp",
+                                    "alamat",
+                                    "gender",
+                                    "tgl_lahir",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "nama": {
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "john.doe@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "example": "password123"
+                                    },
+                                    "no_hp": {
+                                        "type": "string",
+                                        "example": "081234567890"
+                                    },
+                                    "alamat": {
+                                        "type": "string",
+                                        "example": "Jl. Merdeka No. 123"
+                                    },
+                                    "gender": {
+                                        "type": "string",
+                                        "enum": [
+                                            "laki-laki",
+                                            "perempuan"
+                                        ],
+                                        "example": "laki-laki"
+                                    },
+                                    "tgl_lahir": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "1990-01-01"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "enum": [
+                                            "customer",
+                                            "driver"
+                                        ],
+                                        "example": "customer"
+                                    },
+                                    "foto_profil": {
+                                        "description": "Optional profile photo",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Registration successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Registrasi customer berhasil"
+                                        },
+                                        "user": {
+                                            "$ref": "#/components/schemas/User"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid role",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Role tidak valid"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "errors": {
+                                            "type": "object",
+                                            "additionalProperties": [
+                                                {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    },
+                                                    "property": null
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/search-location": {
+            "get": {
+                "tags": [
+                    "Geocoding"
+                ],
+                "summary": "Search location by query",
+                "operationId": "3936f4cb0f623de7538fa607c296c379",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Location to search for",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Universitas Ciputra"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Location search results",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "place_name": {
+                                                "type": "string"
+                                            },
+                                            "lat": {
+                                                "type": "number",
+                                                "format": "float"
+                                            },
+                                            "lon": {
+                                                "type": "number",
+                                                "format": "float"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch location",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to fetch location"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reverse-geocode": {
+            "get": {
+                "tags": [
+                    "Geocoding"
+                ],
+                "summary": "Get address by latitude and longitude",
+                "operationId": "8b88d52b06d01d3e42203acbe3ce59c0",
+                "parameters": [
+                    {
+                        "name": "lat",
+                        "in": "query",
+                        "description": "Latitude of the location",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float",
+                            "example": "-5.2299394697095245"
+                        }
+                    },
+                    {
+                        "name": "lon",
+                        "in": "query",
+                        "description": "Longitude of the location",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float",
+                            "example": "119.50211253693419"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Address for given coordinates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "address": {
+                                            "type": "object"
+                                        },
+                                        "place_name": {
+                                            "type": "string"
+                                        },
+                                        "lat": {
+                                            "type": "number",
+                                            "format": "float"
+                                        },
+                                        "lon": {
+                                            "type": "number",
+                                            "format": "float"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch address",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to fetch address"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-route": {
+            "get": {
+                "tags": [
+                    "Geocoding"
+                ],
+                "summary": "Get route from start to end location",
+                "operationId": "d650ee196c6601f10128deeb83472da3",
+                "parameters": [
+                    {
+                        "name": "start_lat",
+                        "in": "query",
+                        "description": "Starting latitude",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "start_lon",
+                        "in": "query",
+                        "description": "Starting longitude",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "end_lat",
+                        "in": "query",
+                        "description": "Ending latitude",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    },
+                    {
+                        "name": "end_lon",
+                        "in": "query",
+                        "description": "Ending longitude",
+                        "required": true,
+                        "schema": {
+                            "type": "number",
+                            "format": "float"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Route details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "routes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "distance": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1500
+                                                    },
+                                                    "duration": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 10
+                                                    },
+                                                    "geometry": {
+                                                        "type": "string",
+                                                        "example": "polyline_string_here"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing parameters",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Missing required parameters"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch route from OSRM",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to fetch route from OSRM"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-koordinat-halte": {
+            "get": {
+                "tags": [
+                    "Geocoding"
+                ],
+                "summary": "Get coordinates of predefined bus stops",
+                "operationId": "a9004360d8bc7a33de628ce201d34157",
+                "responses": {
+                    "200": {
+                        "description": "Predefined bus stops with coordinates",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "lat": {
+                                                "type": "number",
+                                                "format": "float"
+                                            },
+                                            "lon": {
+                                                "type": "number",
+                                                "format": "float"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-circular-route": {
+            "get": {
+                "tags": [
+                    "Geocoding"
+                ],
+                "summary": "Get circular route by waypoints",
+                "operationId": "38be7d8e9305a4769e9cdc486a5ec9a2",
+                "parameters": [
+                    {
+                        "name": "waypoints",
+                        "in": "query",
+                        "description": "Waypoints in lon,lat format",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "119.50211253693419,-5.2299394697095245;119.46426590725011,-5.18092218503825"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Circular route details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "routes": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "distance": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 1500
+                                                    },
+                                                    "duration": {
+                                                        "type": "number",
+                                                        "format": "float",
+                                                        "example": 10
+                                                    },
+                                                    "geometry": {
+                                                        "type": "string",
+                                                        "example": "polyline_string_here"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Missing waypoints parameter",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Missing required parameters"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed to fetch route from OSRM",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Failed to fetch route from OSRM"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-trayeks": {
+            "get": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Get all trayek",
+                "operationId": "537137a1650314000aa1f348efac8b7d",
+                "responses": {
+                    "200": {
+                        "description": "List of trayeks",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Trayek"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-haltes": {
+            "get": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Get all haltes",
+                "operationId": "3857510d59abd6fc53d428a1fc53c1c8",
+                "responses": {
+                    "200": {
+                        "description": "List of haltes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Halte"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-schedules": {
+            "get": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Get all schedules",
+                "operationId": "e7cd2c558c57a7cfc84382891ac41f64",
+                "responses": {
+                    "200": {
+                        "description": "List of schedules",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Schedule"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/get-trayek-with-halte/{trayekId}": {
+            "get": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Get trayek with halte details",
+                "operationId": "7e2de877aab564150fe8583522ff43e7",
+                "parameters": [
+                    {
+                        "name": "trayekId",
+                        "in": "path",
+                        "description": "Trayek ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Trayek with haltes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "kode_trayek": {
+                                            "type": "string"
+                                        },
+                                        "urutan_halte": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Halte"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Trayek not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Trayek tidak ditemukan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/beli-tiket": {
+            "post": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Buy a ticket",
+                "operationId": "4ea03dd488d4dfd51cf6d5ded76b4f91",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trayek_id": {
+                                        "type": "integer"
+                                    },
+                                    "jumlah_tiket": {
+                                        "type": "integer"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "cash",
+                                            "cashless"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Ticket purchased successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tiket berhasil dibeli"
+                                        },
+                                        "ticket": {
+                                            "$ref": "#/components/schemas/Ticket"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Invalid ticket or expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Tiket tidak valid atau sudah kadaluarsa"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/cek-status-tiket": {
+            "post": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Check ticket status",
+                "operationId": "6e7b07242b7403bfcdfd12ba4db956ae",
+                "responses": {
+                    "200": {
+                        "description": "Ticket is valid and can be used",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tiket valid dan dapat digunakan"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Ticket is invalid or expired",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Tiket tidak valid atau sudah kadaluarsa"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pesan-pete": {
+            "post": {
+                "tags": [
+                    "Pemesanan"
+                ],
+                "summary": "Pesan angkot (angkutan kota)",
+                "operationId": "f95d5de365c349c1d7c066adc9bea51b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "trayek_id": {
+                                        "description": "ID trayek yang ingin dipesan",
+                                        "type": "integer"
+                                    },
+                                    "jumlah_tiket": {
+                                        "description": "Jumlah tiket yang ingin dipesan",
+                                        "type": "integer"
+                                    },
+                                    "payment_method": {
+                                        "description": "Metode pembayaran",
+                                        "type": "string",
+                                        "enum": [
+                                            "cash",
+                                            "cashless"
+                                        ]
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Tiket berhasil dipesan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tiket berhasil dipesan"
+                                        },
+                                        "transaksi": {
+                                            "$ref": "#/components/schemas/Transaction"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Hanya customer yang dapat memesan tiket atau tiket belum dibeli",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hanya customer yang dapat memesan tiket"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Trayek atau kendaraan tidak ditemukan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tidak ada kendaraan yang tersedia untuk trayek ini"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Input tidak valid atau ada kesalahan dalam pemesanan",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tiket belum dibeli"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/user/transaksi": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Get all transactions for the authenticated user",
+                "operationId": "926153a57fbd396e3cb14c30b99ca73b",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "User not authenticated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User tidak terautentikasi"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No transactions found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tidak ada transaksi untuk user ini"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/driver/transaksi": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Get all transactions for the authenticated driver",
+                "operationId": "fb454993cc1e6bd974c478ba06c75696",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved driver transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Driver only can access this",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Hanya driver yang dapat melihat transaksi ini"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No transactions found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Tidak ada transaksi untuk driver ini"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transaksi/filter/date/{date}": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Filter transactions by date",
+                "operationId": "d1eca20cdc785eb7a020c1433d340cf9",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "The date to filter transactions",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully filtered transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transaksi/filter/month/{month}/year/{year}": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Filter transactions by month and year",
+                "operationId": "4f06e4b8f7dfbeb43148b96930a440c6",
+                "parameters": [
+                    {
+                        "name": "month",
+                        "in": "path",
+                        "description": "Month to filter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "path",
+                        "description": "Year to filter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully filtered transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transaksi/filter/year/{year}": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Filter transactions by year",
+                "operationId": "a415c993e2f79a2e4d17dcf352a153d8",
+                "parameters": [
+                    {
+                        "name": "year",
+                        "in": "path",
+                        "description": "Year to filter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully filtered transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/transaksi/filter/date/{date}/month/{month}/year/{year}": {
+            "get": {
+                "tags": [
+                    "Transaksi"
+                ],
+                "summary": "Filter transactions by specific date, month, and year",
+                "operationId": "d4224be5b111a6662020d678c51466f4",
+                "parameters": [
+                    {
+                        "name": "date",
+                        "in": "path",
+                        "description": "The date to filter",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date"
+                        }
+                    },
+                    {
+                        "name": "month",
+                        "in": "path",
+                        "description": "Month to filter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "path",
+                        "description": "Year to filter",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2025
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully filtered transactions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Transaction"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Driver": {
+                "required": [
+                    "id_driver",
+                    "nama",
+                    "email",
+                    "password",
+                    "alamat",
+                    "tgl_lahir",
+                    "no_hp",
+                    "gender",
+                    "id_kendaraan"
+                ],
+                "properties": {
+                    "id_driver": {
+                        "description": "ID of the driver",
+                        "type": "integer"
+                    },
+                    "nama": {
+                        "description": "Name of the driver",
+                        "type": "string"
+                    },
+                    "email": {
+                        "description": "Email of the driver",
+                        "type": "string"
+                    },
+                    "password": {
+                        "description": "Password of the driver",
+                        "type": "string"
+                    },
+                    "alamat": {
+                        "description": "Address of the driver",
+                        "type": "string"
+                    },
+                    "tgl_lahir": {
+                        "description": "Date of birth of the driver",
+                        "type": "string",
+                        "format": "date"
+                    },
+                    "no_hp": {
+                        "description": "Phone number of the driver",
+                        "type": "string"
+                    },
+                    "gender": {
+                        "description": "Gender of the driver",
+                        "type": "string"
+                    },
+                    "id_kendaraan": {
+                        "description": "ID of the vehicle assigned to the driver",
+                        "type": "integer"
+                    },
+                    "kendaraan": {
+                        "$ref": "#/components/schemas/Kendaraan"
+                    }
+                },
+                "type": "object"
+            },
+            "Halte": {
+                "required": [
+                    "id",
+                    "nama_halte",
+                    "latitude",
+                    "longitude"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID of the halte",
+                        "type": "integer"
+                    },
+                    "nama_halte": {
+                        "description": "Name of the halte",
+                        "type": "string"
+                    },
+                    "latitude": {
+                        "description": "Latitude of the halte",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "longitude": {
+                        "description": "Longitude of the halte",
+                        "type": "number",
+                        "format": "float"
+                    }
+                },
+                "type": "object"
+            },
+            "Kendaraan": {
+                "required": [
+                    "id",
+                    "trayek_id",
+                    "no_plat",
+                    "tahun_kendaraan",
+                    "is_tersedia",
+                    "koordinat"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID of the vehicle",
+                        "type": "integer"
+                    },
+                    "trayek_id": {
+                        "description": "ID of the route (trayek) the vehicle is assigned to",
+                        "type": "integer"
+                    },
+                    "no_plat": {
+                        "description": "License plate number of the vehicle",
+                        "type": "string"
+                    },
+                    "tahun_kendaraan": {
+                        "description": "Year of the vehicle",
+                        "type": "integer"
+                    },
+                    "is_tersedia": {
+                        "description": "Availability of the vehicle (true if available, false if not)",
+                        "type": "boolean"
+                    },
+                    "koordinat": {
+                        "description": "Coordinates of the vehicle (e.g., latitude, longitude)",
+                        "type": "string"
+                    },
+                    "trayek": {
+                        "$ref": "#/components/schemas/Trayek"
+                    },
+                    "schedules": {
+                        "$ref": "#/components/schemas/Schedule"
+                    },
+                    "drivers": {
+                        "$ref": "#/components/schemas/Driver"
+                    }
+                },
+                "type": "object"
+            },
+            "Schedule": {
+                "required": [
+                    "id",
+                    "id_kendaraan",
+                    "waktu_berangkat",
+                    "waktu_tiba"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID of the schedule",
+                        "type": "integer"
+                    },
+                    "id_kendaraan": {
+                        "description": "ID of the kendaraan (vehicle) associated with the schedule",
+                        "type": "integer"
+                    },
+                    "waktu_berangkat": {
+                        "description": "Departure time",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "waktu_tiba": {
+                        "description": "Arrival time",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "kendaraan": {
+                        "$ref": "#/components/schemas/Kendaraan"
+                    },
+                    "trayeks": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Trayek"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "Ticket": {
+                "required": [
+                    "id",
+                    "id_user",
+                    "tgl_pembelian",
+                    "expired_at",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID of the ticket",
+                        "type": "integer"
+                    },
+                    "id_user": {
+                        "description": "ID of the user who purchased the ticket",
+                        "type": "integer"
+                    },
+                    "tgl_pembelian": {
+                        "description": "Ticket purchase date",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "expired_at": {
+                        "description": "Ticket expiration date",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "status": {
+                        "description": "Ticket status (active/expired)",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "type": "object"
+            },
+            "Transaction": {
+                "required": [
+                    "id",
+                    "id_user",
+                    "id_driver",
+                    "id_trayek",
+                    "jenis_tiket",
+                    "tgl_transaksi",
+                    "jumlah_tiket",
+                    "payment_method",
+                    "payment_amount",
+                    "payment_status"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID of the transaction",
+                        "type": "integer"
+                    },
+                    "id_user": {
+                        "description": "ID of the user who made the transaction",
+                        "type": "integer"
+                    },
+                    "id_driver": {
+                        "description": "ID of the driver involved in the transaction",
+                        "type": "integer"
+                    },
+                    "id_trayek": {
+                        "description": "ID of the route (trayek) associated with the transaction",
+                        "type": "integer"
+                    },
+                    "jenis_tiket": {
+                        "description": "Type of ticket (e.g., regular, VIP)",
+                        "type": "string"
+                    },
+                    "tgl_transaksi": {
+                        "description": "Transaction date and time",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "jumlah_tiket": {
+                        "description": "Number of tickets purchased",
+                        "type": "integer"
+                    },
+                    "payment_method": {
+                        "description": "Payment method used (e.g., cash, credit card)",
+                        "type": "string"
+                    },
+                    "payment_amount": {
+                        "description": "Amount paid for the transaction",
+                        "type": "number",
+                        "format": "float"
+                    },
+                    "payment_status": {
+                        "description": "Status of the payment (e.g., pending, completed)",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "driver": {
+                        "$ref": "#/components/schemas/Driver"
+                    },
+                    "trayek": {
+                        "$ref": "#/components/schemas/Trayek"
+                    }
+                },
+                "type": "object"
+            },
+            "Trayek": {
+                "required": [
+                    "id",
+                    "kode_trayek",
+                    "urutan_halte",
+                    "id_schedule"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "ID of the trayek",
+                        "type": "integer"
+                    },
+                    "kode_trayek": {
+                        "description": "Trayek code",
+                        "type": "string"
+                    },
+                    "urutan_halte": {
+                        "description": "Order of halts",
+                        "type": "integer"
+                    },
+                    "id_schedule": {
+                        "description": "Associated schedule ID",
+                        "type": "integer"
+                    },
+                    "schedule": {
+                        "$ref": "#/components/schemas/Schedule"
+                    },
+                    "haltes": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Halte"
+                        }
+                    },
+                    "kendaraan": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Kendaraan"
+                        }
+                    },
+                    "transaksi": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/Transaction"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "nama": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "no_hp": {
+                        "type": "string",
+                        "example": "081234567890"
+                    },
+                    "alamat": {
+                        "type": "string",
+                        "example": "Jl. Merdeka No. 123"
+                    },
+                    "gender": {
+                        "type": "string",
+                        "enum": [
+                            "laki-laki",
+                            "perempuan"
+                        ],
+                        "example": "laki-laki"
+                    },
+                    "tgl_lahir": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "1990-01-01"
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "customer",
+                            "driver"
+                        ],
+                        "example": "customer"
+                    },
+                    "foto_profil": {
+                        "description": "Optional profile photo",
+                        "type": "string",
+                        "format": "binary"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "User Profile",
+            "description": "User Profile"
+        },
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Geocoding",
+            "description": "Geocoding"
+        },
+        {
+            "name": "Pemesanan",
+            "description": "Pemesanan"
+        },
+        {
+            "name": "Transaksi",
+            "description": "Transaksi"
+        }
+    ]
+}

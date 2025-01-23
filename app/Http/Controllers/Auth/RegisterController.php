@@ -10,11 +10,57 @@ use App\Models\User;
 use App\Models\Driver;
 
 
+
 class RegisterController extends Controller
 {
      /**
-     * Handle user registration.
+     * @OA\Post(
+     *     path="/api/register",
+     *     summary="User registration for customer or driver",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nama", "email", "password", "no_hp", "alamat", "gender", "tgl_lahir", "role"},
+     *             @OA\Property(property="nama", type="string", example="John Doe"),
+     *             @OA\Property(property="email", type="string", example="john.doe@example.com"),
+     *             @OA\Property(property="password", type="string", example="password123"),
+     *             @OA\Property(property="password_confirmation", type="string", example="password123"),
+     *             @OA\Property(property="no_hp", type="string", example="081234567890"),
+     *             @OA\Property(property="alamat", type="string", example="Jl. Merdeka No. 123"),
+     *             @OA\Property(property="gender", type="string", enum={"laki-laki", "perempuan"}, example="laki-laki"),
+     *             @OA\Property(property="tgl_lahir", type="string", format="date", example="1990-01-01"),
+     *             @OA\Property(property="role", type="string", enum={"customer", "driver"}, example="customer"),
+     *             @OA\Property(property="foto_profil", type="string", format="binary", description="Optional profile photo")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Registration successful",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Registrasi customer berhasil"),
+     *             @OA\Property(property="user", type="object", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Invalid role",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Role tidak valid")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation errors",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="errors", type="object", additionalProperties={
+     *                 @OA\Property(type="array", items=@OA\Items(type="string"))
+     *             })
+     *         )
+     *     )
+     * )
      */
+
     public function register(Request $request)
     {
         // Validasi input

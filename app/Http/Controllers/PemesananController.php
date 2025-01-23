@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Trayek;
 use App\Models\Halte;
 use App\Models\Schedule;
-use App\Models\TrayekHalte;
 use App\Models\Transaction;
 use App\Models\User;
 use App\Models\Driver;
@@ -16,6 +15,21 @@ use Carbon\Carbon;
 
 class PemesananController extends Controller
 {
+      /**
+     * @OA\Get(
+     *     path="/api/get-trayeks",
+     *     summary="Get all trayek",
+     *     tags={"Pemesanan"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of trayeks",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Trayek")
+     *         )
+     *     )
+     * )
+     */
 
     // Menampilkan list trayek untuk semua orang (tidak memerlukan autentikasi)
     public function getTrayeks()
@@ -24,12 +38,44 @@ class PemesananController extends Controller
         return response()->json($trayeks);
     }
 
+     /**
+     * @OA\Get(
+     *     path="/api/get-haltes",
+     *     summary="Get all haltes",
+     *     tags={"Pemesanan"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of haltes",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Halte")
+     *         )
+     *     )
+     * )
+     */
+
     // Menampilkan list halte untuk semua orang (tidak memerlukan autentikasi)
     public function getHaltes()
     {
         $haltes = Halte::all();
         return response()->json($haltes);
     }
+
+     /**
+     * @OA\Get(
+     *     path="/api/get-schedules",
+     *     summary="Get all schedules",
+     *     tags={"Pemesanan"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of schedules",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Schedule")
+     *         )
+     *     )
+     * )
+     */
 
     // Menampilkan list jadwal untuk semua orang (tidak memerlukan autentikasi)
     public function getSchedules()
@@ -38,12 +84,37 @@ class PemesananController extends Controller
         return response()->json($schedules);
     }
 
-    // Menampilkan list trayek halte untuk semua orang (tidak memerlukan autentikasi)
-    public function getTrayekHaltes()
-    {
-        $trayekHaltes = TrayekHalte::all();
-        return response()->json($trayekHaltes);
-    }
+
+    /**
+     * @OA\Get(
+     *     path="/api/get-trayek-with-halte/{trayekId}",
+     *     summary="Get trayek with halte details",
+     *     tags={"Pemesanan"},
+     *     @OA\Parameter(
+     *         name="trayekId",
+     *         in="path",
+     *         description="Trayek ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Trayek with haltes",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="kode_trayek", type="string"),
+     *             @OA\Property(property="urutan_halte", type="array", @OA\Items(ref="#/components/schemas/Halte"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Trayek not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Trayek tidak ditemukan")
+     *         )
+     *     )
+     * )
+     */
 
     public function getTrayekWithHalte($trayekId)
     {
@@ -66,6 +137,38 @@ class PemesananController extends Controller
         return response()->json(['error' => 'Trayek tidak ditemukan'], 404);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/api/beli-tiket",
+     *     summary="Buy a ticket",
+     *     tags={"Pemesanan"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="trayek_id", type="integer"),
+     *             @OA\Property(property="jumlah_tiket", type="integer"),
+     *             @OA\Property(property="payment_method", type="string", enum={"cash", "cashless"})
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Ticket purchased successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Tiket berhasil dibeli"),
+     *             @OA\Property(property="ticket", ref="#/components/schemas/Ticket")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Invalid ticket or expired",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Tiket tidak valid atau sudah kadaluarsa")
+     *         )
+     *     )
+     * )
+     */
+
     public function beliTiket(Request $request)
     {
         $user = $request->user();
@@ -81,7 +184,29 @@ class PemesananController extends Controller
         return response()->json(['message' => 'Tiket berhasil dibeli', 'ticket' => $ticket]);
     }
 
-    public function gunakanTiket(Request $request)
+     /**
+     * @OA\Post(
+     *     path="/api/cek-status-tiket",
+     *     summary="Check ticket status",
+     *     tags={"Pemesanan"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Ticket is valid and can be used",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Tiket valid dan dapat digunakan")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Ticket is invalid or expired",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Tiket tidak valid atau sudah kadaluarsa")
+     *         )
+     *     )
+     * )
+     */
+
+    public function cekTiket(Request $request)
     {   
         $user = $request->user();
 
@@ -96,9 +221,54 @@ class PemesananController extends Controller
 
         return response()->json(['message' => 'Tiket valid dan dapat digunakan.']);
     }
-    
+
+        /**
+     * @OA\Post(
+     *     path="/api/pesan-pete",
+     *     summary="Pesan angkot (angkutan kota)",
+     *     tags={"Pemesanan"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="trayek_id", type="integer", description="ID trayek yang ingin dipesan"),
+     *             @OA\Property(property="jumlah_tiket", type="integer", description="Jumlah tiket yang ingin dipesan"),
+     *             @OA\Property(property="payment_method", type="string", enum={"cash", "cashless"}, description="Metode pembayaran")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Tiket berhasil dipesan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Tiket berhasil dipesan"),
+     *             @OA\Property(property="transaksi", ref="#/components/schemas/Transaction")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Hanya customer yang dapat memesan tiket atau tiket belum dibeli",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Hanya customer yang dapat memesan tiket")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Trayek atau kendaraan tidak ditemukan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Tidak ada kendaraan yang tersedia untuk trayek ini")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Input tidak valid atau ada kesalahan dalam pemesanan",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Tiket belum dibeli")
+     *         )
+     *     )
+     * )
+     */
    
-    public function pesanAngkot(Request $request)
+    public function pesanPete(Request $request)
     {
         // Pastikan user terautentikasi dan memiliki role customer
         if (auth()->check() && auth()->user()->role != 'customer') {

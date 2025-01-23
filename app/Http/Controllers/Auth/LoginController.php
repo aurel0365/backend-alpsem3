@@ -12,6 +12,55 @@ use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
+    /**
+ * @OA\Post(
+ *     path="/api/login",
+ *     summary="Login user berdasarkan role",
+ *     tags={"Authentication"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"email", "password", "role"},
+ *             @OA\Property(property="email", type="string", format="email", example="user@example.com", description="Email pengguna"),
+ *             @OA\Property(property="password", type="string", example="password123", description="Password pengguna"),
+ *             @OA\Property(property="role", type="string", enum={"customer", "driver"}, example="customer", description="Role pengguna (customer atau driver)")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Login berhasil",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Login berhasil"),
+ *             @OA\Property(property="role", type="string", example="customer", description="Role pengguna"),
+ *             @OA\Property(property="token", type="string", example="1|xyz123abc456def789ghi"),
+ *             @OA\Property(property="nama", type="string", example="John Doe", description="Nama pengguna")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Email, role, atau password tidak sesuai",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Email, role, atau password tidak sesuai.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Role tidak valid",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Role tidak valid.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Validasi input gagal",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="The given data was invalid."),
+ *             @OA\Property(property="errors", type="object", additionalProperties=@OA\Property(type="array", @OA\Items(type="string")))
+ *         )
+ *     )
+ * )
+ */
+
     public function login(Request $request)
     {
         // Validasi input
